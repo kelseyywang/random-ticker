@@ -10,9 +10,11 @@
 .number {
   font-family: "Lato", sans-serif;
   font-size: 550px;
+  line-height: 500px;
 }
 
 .restart-button {
+  margin: 100px;
   font-family: "Lato", sans-serif;
   font-size: 15px;
   padding: 15px;
@@ -20,4 +22,20 @@
   color: white;
   border-radius: 8px;
   cursor: pointer;
+}
+
+@media (max-height: 650px) {
+  .number {
+    font-family: "Lato", sans-serif;
+    font-size: 300px;
+    line-height: 250px;
+  }
+}
+
+@media (max-width: 500px) {
+  .number {
+    font-family: "Lato", sans-serif;
+    font-size: 300px;
+    line-height: 250px;
+  }
 }
