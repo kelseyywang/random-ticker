@@ -11,6 +11,7 @@ class Ticker extends Component {
   }
 
   onRestartClick() {
+    this.props.onRestart();
     this.setState({
       lastTimeoutAmt: this.props.timeInitial,
     }, this.changeNum.bind(this));
@@ -45,7 +46,7 @@ class Ticker extends Component {
           className="restart-button"
           onClick={this.onRestartClick.bind(this)}
         >
-          Click Me
+          New Number!
         </div>
       </div>
     );
