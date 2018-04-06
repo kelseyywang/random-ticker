@@ -5,49 +5,107 @@ class Ticker extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      number: this.props.min,
+      displayed: this.props.min,
       lastTimeoutAmt: this.props.timeInitial,
+      currentDisplayStyle: "number",
+      ticking: false,
     };
   }
 
-  onRestartClick() {
-    this.props.onRestart();
-    this.setState({
-      lastTimeoutAmt: this.props.timeInitial,
-    }, this.changeNum.bind(this));
+  componentWillUnmount() {
+    clearTimeout(this.numberTimeout);
+    clearTimeout(this.thingTimeout);
+  }
+
+  onNewNumberClick() {
+    if (!this.state.ticking) {
+      this.props.onRestart();
+      this.setState({
+        lastTimeoutAmt: this.props.timeInitial,
+        currentDisplayStyle: "number",
+        ticking: true,
+      }, this.changeNum.bind(this));
+    }
+  }
+
+  onNewThingClick() {
+    if (!this.state.ticking) {
+      this.props.onRestart();
+      this.setState({
+        lastTimeoutAmt: this.props.timeInitial,
+        currentDisplayStyle: "thing",
+        ticking: true,
+      }, this.changeThing.bind(this));
+    }
   }
 
   changeNum() {
     if (this.state.lastTimeoutAmt < this.props.maxTime) {
       let timeoutAmt = this.state.lastTimeoutAmt * this.props.timeMultiplier;
       let randNum = Math.floor(Math.random() * (this.props.max - this.props.min + 1) + this.props.min);
-      if (randNum === this.state.number) {
+      if (randNum === this.state.displayed) {
         randNum = (randNum + 1) % (this.props.max - this.props.min + 1) + this.props.min;
       }
       this.setState({
-        number: randNum,
-        changeCount: this.state.changeCount + 1,
+        displayed: randNum,
         lastTimeoutAmt: timeoutAmt,
-      }, this.setNewTimeout.bind(this, timeoutAmt));
+      }, this.setNewNumberTimeout.bind(this, timeoutAmt));
+    }
+    else {
+      this.setState({
+        ticking: false,
+      });
     }
   }
 
-  setNewTimeout(time) {
-    this.timeout = setTimeout(this.changeNum.bind(this), time);
+  changeThing() {
+    if (this.state.lastTimeoutAmt < this.props.maxTime) {
+      let thingArr = this.props.things;
+      let timeoutAmt = this.state.lastTimeoutAmt * this.props.timeMultiplier;
+      let randInd = Math.floor(Math.random() * (thingArr.length));
+      if (randInd === this.state.displayed) {
+        randInd = (randInd + 1) % thingArr.length;
+      }
+      this.setState({
+        displayed: thingArr[randInd],
+        lastTimeoutAmt: timeoutAmt,
+      }, this.setNewThingTimeout.bind(this, timeoutAmt));
+    }
+    else {
+      this.setState({
+        ticking: false,
+      });
+    }
+  }
+
+  setNewNumberTimeout(time) {
+    this.numberTimeout = setTimeout(this.changeNum.bind(this), time);
+  }
+
+  setNewThingTimeout(time) {
+    this.thingTimeout = setTimeout(this.changeThing.bind(this), time);
   }
 
   render() {
     return (
       <div className="ticker-container">
-        <div className="number">
-          {this.state.number}
+        <div className={this.state.currentDisplayStyle}>
+          {this.state.displayed}
         </div>
-        <div
-          className="restart-button"
-          onClick={this.onRestartClick.bind(this)}
-        >
-          New Number!
-        </div>
+        <div className="button-container">
+          <div
+            className="restart-button"
+            onClick={this.onNewNumberClick.bind(this)}
+          >
+            New Number!
+          </div>
+          <div
+            className="restart-button"
+            onClick={this.onNewThingClick.bind(this)}
+          >
+            New Thing!
+          </div>
+          </div>
       </div>
     );
   }
