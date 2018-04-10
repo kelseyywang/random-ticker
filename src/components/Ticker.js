@@ -9,6 +9,7 @@ class Ticker extends Component {
       lastTimeoutAmt: this.props.timeInitial,
       currentDisplayStyle: "number",
       ticking: false,
+      thingsAlreadyDisplayed: [],
     };
   }
 
@@ -69,11 +70,28 @@ class Ticker extends Component {
       this.setState({
         displayed: thingArr[randInd],
         lastTimeoutAmt: timeoutAmt,
+
+      }, this.setNewThingTimeout.bind(this, timeoutAmt));
+    }
+    else if (this.state.thingsAlreadyDisplayed.includes(this.state.displayed)) {
+      //This is the case where the final thing picked has already been picked
+      let thingArr = this.props.things;
+      //Don't increase the next timeout amount
+      let timeoutAmt = this.state.lastTimeoutAmt;
+      let randInd = Math.floor(Math.random() * (thingArr.length));
+      if (thingArr[randInd] === this.state.displayed) {
+        randInd = (randInd + 1) % thingArr.length;
+      }
+      this.setState({
+        displayed: thingArr[randInd],
+        lastTimeoutAmt: timeoutAmt,
       }, this.setNewThingTimeout.bind(this, timeoutAmt));
     }
     else {
+      this.state.thingsAlreadyDisplayed.push(this.state.displayed);
       this.setState({
         ticking: false,
+        thingsAlreadyDisplayed: this.state.thingsAlreadyDisplayed,
       });
     }
   }
