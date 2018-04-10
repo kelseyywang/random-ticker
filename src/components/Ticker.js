@@ -42,9 +42,9 @@ class Ticker extends Component {
   changeNum() {
     if (this.state.lastTimeoutAmt < this.props.maxTime) {
       let timeoutAmt = this.state.lastTimeoutAmt * this.props.timeMultiplier;
-      let randNum = Math.floor(Math.random() * (this.props.max - this.props.min + 1) + this.props.min);
+      let randNum = Math.floor(Math.random() * (this.props.max - this.props.min + 1)) + parseInt(this.props.min, 10);
       if (randNum === this.state.displayed) {
-        randNum = (randNum + 1) % (this.props.max - this.props.min + 1) + this.props.min;
+        randNum = ((randNum - this.props.min + 1) % (this.props.max - this.props.min + 1)) + parseInt(this.props.min, 10);
       }
       this.setState({
         displayed: randNum,
@@ -63,7 +63,7 @@ class Ticker extends Component {
       let thingArr = this.props.things;
       let timeoutAmt = this.state.lastTimeoutAmt * this.props.timeMultiplier;
       let randInd = Math.floor(Math.random() * (thingArr.length));
-      if (randInd === this.state.displayed) {
+      if (thingArr[randInd] === this.state.displayed) {
         randInd = (randInd + 1) % thingArr.length;
       }
       this.setState({
